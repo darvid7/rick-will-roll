@@ -1,9 +1,10 @@
 import os
+import json
 from data_parser.parse_songs import parse_songs
 
 data_files = [
     '../youtube_comments/1_youtube_comment_data.text',
-    '../youtube_comment/youtube_comment_data.text'
+    '../youtube_comments/youtube_comment_data.text'
 ]
 
 SONG_DATA_FILE = "../billboard.csv"
@@ -37,4 +38,5 @@ for file in data_files:
                 'youtube_id': youtube_id,
                 'comments': comment_list
             }
-print(processed_song_keys)
+with open('cleaned_youtube_comment_data.json', 'w') as fh:
+    fh.write(json.dumps(processed_song_keys))
