@@ -18,7 +18,6 @@ import os
 import sys
 
 from apiclient.discovery import build_from_document
-from apiclient.errors import HttpError
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
@@ -117,16 +116,23 @@ def get_comments(youtube, parent_id):
 
 
 if __name__ == "__main__":
+  # python3 get_youtube_comments_by_id.py --artist 'Justin Bieber' --name 'What Do You Mean?'
 
+  argparser.add_argument("--artist", required=True, type=str,
+                         help="Artist of song.")
 
-  video_name = "Justin Bieber - What Do You Mean?"
+  argparser.add_argument("--name", required=True, type=str,
+                         help="Name of song.")
   args = argparser.parse_args()
 
   youtube = get_authenticated_service(args)
 
+  search_term = "%s %s" % (args.name, args.artist)
+
+  print("Searching for %s" % search_term)
   # Response is a dict.
   response = youtube.search().list(
-    q=video_name,
+    q=search_term,
     part="id",
     type="video",
     fields="items/id"
@@ -140,14 +146,7 @@ if __name__ == "__main__":
     print("Video id: %s" % video_id)
     video_comments = get_comment_threads(youtube, video_id)
 
-    write_to_fs(video_name, video_id, video_comments)
-    print("Finished song: %s, %s comments" % (video_name, len(video_comments)))
-  # # All the available methods are used in sequence just for the sake of an example.
-  # try:
-  #   video_comment_threads = get_comment_threads(youtube, args.videoid)
-  #   parent_id = video_comment_threads[0]["id"]
-  #   video_comments = get_comments(youtube, parent_id)
-  # except HttpError as e:
-  #   print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
-  # else:
-  #   print("Inserted, listed, updated, moderated, marked and deleted comments.")
+    write_to_fs(search_term, video_id, video_comments)
+    print("Finished song: %s, %s comments" % (search_term, len(video_comments)))
+  else:
+    print("No data for %s" % search_term)
