@@ -1,2 +1,11 @@
+.idea
 lyrics.csv
 lyrics.csv.zip
+youtube_comments/client_secrets.json
+youtube_comments/get_youtube_comments.py-oauth2.json
+youtube_comments/youtube-v3-discoverydocument.json
+youtube_song_comments/*.json
+youtube_data_old/*
+.DS_Store
+*.DS_Store
+*/.DS_Store
