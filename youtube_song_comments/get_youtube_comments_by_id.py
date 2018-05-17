@@ -1,10 +1,10 @@
 ## HACKY WRITE TO JSON HERE.
 FILENAME = "youtube_comment_data.text"
 
-def write_to_fs(song_name, song_id, comment_list):
-  with open(FILENAME, 'a', encoding='utf-8') as fh:
+def write_to_fs(fname, artist, name, year, song_id, comment_list):
+  with open(fname, 'a', encoding='utf-8') as fh:
     # Song name, song id, top n comments
-    format = '%s, %s, %s\n' % (song_name, song_id, comment_list)
+    format = '%s, %s, %s, %s, %s \n' % (artist, name, year, song_id, comment_list)
     fh.write(format)
 ##
 
@@ -123,6 +123,13 @@ if __name__ == "__main__":
 
   argparser.add_argument("--name", required=True, type=str,
                          help="Name of song.")
+
+  argparser.add_argument("--year", required=True, type=str,
+                         help="Year of song.")
+
+  argparser.add_argument("--fname", required=True, type=str,
+                         help="Output file name.")
+
   args = argparser.parse_args()
 
   youtube = get_authenticated_service(args)
@@ -146,7 +153,7 @@ if __name__ == "__main__":
     print("Video id: %s" % video_id)
     video_comments = get_comment_threads(youtube, video_id)
 
-    write_to_fs(search_term, video_id, video_comments)
+    write_to_fs(args.fname, args.artist, args.name, args.year, video_id, video_comments)
     print("Finished song: %s, %s comments" % (search_term, len(video_comments)))
   else:
     print("No data for %s" % search_term)
